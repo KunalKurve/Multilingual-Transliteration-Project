@@ -10,23 +10,6 @@ Supported languages:
 
 The goal is to create an end-to-end NLP pipeline including data preprocessing, model training, optimization, benchmarking, and deployment.
 
-## Sample Outputs
-
-Input: Bharat
-Hindi: भरत
-Bengali: ভারতে
-Tamil: பரத்
-
-Input: namaste
-Hindi: नमस्ते
-Bengali: নমস্তে
-Tamil: நமஸ்டே
-
-Input: Krishna
-Hindi: क्रिश्
-Bengali: ক্রিশ্
-Tamil: கிரிஷ்
-
 ## Dataset
 Dataset used: Aksharantar Transliteration Dataset
 
@@ -47,6 +30,42 @@ The three selected languages are:
 - Hindi
 - Bengali
 - Tamil
+
+## ## Setup Instructions
+
+### 1. Clone the repository
+
+git clone https://github.com/KunalKurve/Multilingual-Transliteration-Project.git
+cd Multilingual-Transliteration-Project
+
+### 2. Install dependencies
+pip install -r requirements.txt
+
+### 3. Run the application locally
+
+Make sure the following files are available in the root directory:
+- ct2_model.zip
+- tokenizer_only.zip
+
+Then run:
+python app.py
+
+### 4. Training and Experimentation (Execution Notes)
+
+The primary end-to-end workflow for data preparation, training, evaluation, and optimization is documented in:
+
+- `notebooks/Transliteration_Project.ipynb`
+
+This notebook includes:
+
+- dataset preprocessing
+- multilingual dataset creation
+- model training with ByT5
+- evaluation using Accuracy, CER, and WER
+- CTranslate2 conversion and optimization
+- benchmarking and inference testing
+
+The files inside `src/` summarize the benchmarking and evaluation logic used during experimentation and are included for repository organization.
 
 ## Data Preprocessing
 The following preprocessing steps were performed:
@@ -134,7 +153,7 @@ Users can input Romanized text and obtain transliterations in:
 
 ## Repository Structure
 ```text
-multilingual-transliteration-model/
+Multilingual-Transliteration-Project/
 ├── README.md
 ├── app.py
 ├── requirements.txt
@@ -147,6 +166,23 @@ multilingual-transliteration-model/
 └── results/
     └── metrics.md
 ```
+
+## Sample Outputs
+
+Input: Bharat
+Hindi: भरत
+Bengali: ভারতে
+Tamil: பரத்
+
+Input: namaste
+Hindi: नमस्ते
+Bengali: নমস্তে
+Tamil: நமஸ்டே
+
+Input: Krishna
+Hindi: क्रिश्
+Bengali: ক্রিশ্
+Tamil: கிரிஷ்
 
 ## Challenges Faced
 Several challenges were encountered during development:
