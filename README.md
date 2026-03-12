@@ -129,6 +129,7 @@ multilingual-transliteration-model/
 │   └── evaluate.py
 └── results/
     └── metrics.md
+```
 
 ## Challenges Faced
 Several challenges were encountered during development:
