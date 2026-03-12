@@ -1,20 +1,16 @@
-Multilingual Transliteration Model
-Objective
+# Multilingual Transliteration Model
 
+## Objective
 This project builds, optimizes, and deploys a multilingual transliteration model for Indic languages using the Aksharantar dataset.
 
 Supported languages:
+- Hindi
+- Bengali
+- Tamil
 
-Hindi
+The goal is to create an end-to-end NLP pipeline including data preprocessing, model training, optimization, benchmarking, and deployment.
 
-Bengali
-
-Tamil
-
-The goal is to demonstrate the full NLP engineering pipeline including data preprocessing, multilingual model training, model optimization, benchmarking, and deployment.
-
-Dataset
-
+## Dataset
 Dataset used: Aksharantar Transliteration Dataset
 
 Source:
@@ -22,142 +18,105 @@ https://huggingface.co/datasets/ai4bharat/Aksharantar
 
 The dataset contains transliteration pairs in the form:
 
-English word
-
-Native script word
+- English word
+- Native script word
 
 Example:
+- ram → राम
+- namaste → नमस्ते
 
-ram → राम
-namaste → नमस्ते
-bharat → भारत
-Language Selection
+## Language Selection
+The three selected languages are:
+- Hindi
+- Bengali
+- Tamil
 
-Three Indic languages were selected:
-
-Hindi
-
-Bengali
-
-Tamil
-
-These languages represent different scripts and phonetic structures, making them suitable for evaluating multilingual transliteration performance.
-
-Preprocessing
-
+## Data Preprocessing
 The following preprocessing steps were performed:
+1. Loaded language-specific JSONL files.
+2. Selected relevant columns:
+   - `english word`
+   - `native word`
+3. Converted each sample to prompt format:
+   - `transliterate to hindi: ram`
+   - `transliterate to bengali: ram`
+   - `transliterate to tamil: ram`
+4. Combined all three languages into one multilingual dataset.
+5. Performed a 90/10 train-test split.
 
-Loaded language-specific JSONL files.
+## Model Training
+Approach used: Option B — pretrained sequence-to-sequence model.
 
-Selected relevant columns:
+Final model used:
+- `google/byt5-small`
 
-english word
+Why ByT5:
+- Transliteration is a character/byte-level task.
+- ByT5 is better suited for exact string transformation than semantic text generation models.
 
-native word
+Advantages:
 
-Converted each sample into a prompt-based format:
+- Byte-level tokenization
+- Handles multilingual scripts naturally
+- Good for exact string transformations
 
-transliterate to hindi: ram
-transliterate to bengali: ram
-transliterate to tamil: ram
+Framework used:
+- Hugging Face Transformers
 
-Combined the datasets from all three languages into one multilingual dataset.
+### Training Configuration
+- Epochs: 2
+- Batch size: 16
+- Learning rate: 1e-4
+- Max sequence length: 32
+- Training environment: cloud notebook with GPU
 
-Performed a 90/10 train-test split.
+## Evaluation Metrics
+The model was evaluated using:
+- Exact Match Accuracy
+- Character Error Rate (CER)
+- Word Error Rate (WER)
 
-Model Training
-Approach
+### Transformers Model
+- Accuracy: 0.090
+- CER: 0.4100
+- WER: 0.910
 
-Option B — Pretrained sequence-to-sequence model
+### CTranslate2 Model
+- Accuracy: 0.075
+- CER: 0.4131
+- WER: 0.925
 
-Model used:
+## Model Optimization with CTranslate2
+The trained model was converted to CTranslate2 with INT8 quantization.
 
-google/byt5-small
-Why ByT5?
+### Model Size Comparison
+- Original model size: 1147.40 MB
+- CTranslate2 model size: 287.21 MB
+- Size reduction: 74.97%
 
-Transliteration is fundamentally a character-level transformation problem.
-ByT5 operates at the byte level, making it well suited for handling multilingual scripts and exact string mappings.
+### Inference Benchmark
+- Transformers average latency per request: 0.4201 s
+- CTranslate2 average latency per request: 0.9322 s
+- Speed gain: -121.88%
 
-Framework
+### Observation
+CTranslate2 significantly reduced model size, but in this CPU-based benchmark it did not improve latency and showed a small quality drop in accuracy.
 
-Training was performed using:
-
-Hugging Face Transformers
-
-PyTorch
-
-Training Configuration
-Parameter	Value
-Epochs	2
-Batch size	16
-Learning rate	1e-4
-Max sequence length	32
-Training environment	Cloud notebook with GPU
-Evaluation Metrics
-
-The model was evaluated using the following metrics:
-
-Exact Match Accuracy
-
-Character Error Rate (CER)
-
-Word Error Rate (WER)
-
-Transformers Model
-Metric	Value
-Accuracy	0.090
-CER	0.4100
-WER	0.910
-CTranslate2 Model
-Metric	Value
-Accuracy	0.075
-CER	0.4131
-WER	0.925
-Model Optimization with CTranslate2
-
-The trained model was optimized using CTranslate2 with INT8 quantization.
-
-Model Size Comparison
-Model	Size
-Original model	1147.40 MB
-CTranslate2 optimized model	287.21 MB
-Size Reduction
-74.97% reduction
-
-This significantly improves deployability in resource-constrained environments.
-
-Inference Benchmark
-Metric	Transformers	CTranslate2
-Avg latency/request	0.4201 s	0.9322 s
-Speed Gain
--121.88%
-Observation
-
-CTranslate2 significantly reduced model size, but in this CPU-based benchmark it did not improve latency and resulted in a small drop in quality.
-
-However, the optimized model enables lightweight deployment for production environments.
-
-Deployment
-
+## Deployment
 The optimized model was deployed using:
+- Gradio
+- Hugging Face Spaces
 
-Gradio
-
-Hugging Face Spaces
-
-Live Demo
-
+Live demo:
 https://huggingface.co/spaces/kunalkurve219/Multilingual-Transliteration-Project
 
-Users can enter Romanized text and obtain transliteration results for:
+Users can input Romanized text and obtain transliterations in:
+- Hindi
+- Bengali
+- Tamil
 
-Hindi
-
-Bengali
-
-Tamil
-
-Repository Structure
+## Repository Structure
+```text
 multilingual-transliteration-model/
 ├── README.md
 ├── app.py
@@ -170,44 +129,30 @@ multilingual-transliteration-model/
 │   └── evaluate.py
 └── results/
     └── metrics.md
-Challenges Faced
 
+## Challenges Faced
 Several challenges were encountered during development:
+- Dataset loading inconsistencies when using the Hugging Face datasets loader.
+- Early experiments with mT5 showed unstable or poor transliteration performance.
+- Tokenizer compatibility issues during deployment.
+- CTranslate2 reduced model size significantly but did not improve latency in the current CPU benchmark environment.
 
-Dataset loading inconsistencies when using the Hugging Face datasets loader.
-
-Early experiments with mT5 showed unstable or poor transliteration performance.
-
-Tokenizer compatibility issues during deployment.
-
-CTranslate2 reduced model size significantly but did not improve latency in the current CPU benchmark environment.
-
-Design Decisions
-
+## Design Decisions
 Key design decisions included:
+- Choosing Option B (pretrained seq2seq) instead of EOLE-NLP to reduce setup complexity and focus on the full pipeline.
+- Switching from mT5 to ByT5 for better character-level transliteration capability.
+- Using prompt-based multilingual training to support multiple languages within one model.
+- Applying CTranslate2 INT8 quantization to reduce model size and enable lightweight deployment.
 
-Choosing Option B (pretrained seq2seq) instead of EOLE-NLP to reduce setup complexity and focus on the full pipeline.
+## Future Improvements
 
-Switching from mT5 to ByT5 for better character-level transliteration capability.
+Potential improvements include:
+- Training on the full Aksharantar dataset
+- Increasing training epochs
+- Language-specific models or adapters
+- Improved decoding strategies
+- Benchmarking on different hardware environments
 
-Using prompt-based multilingual training to support multiple languages within one model.
-
-Applying CTranslate2 INT8 quantization to reduce model size and enable lightweight deployment.
-
-Future Improvements
-
-Possible improvements include:
-
-Training on the full Aksharantar dataset
-
-Increasing training epochs
-
-Language-specific models or adapters
-
-Improved decoding strategies
-
-Benchmarking on different hardware environments
-
-Author
+## Author
 
 Kunal Kurve
