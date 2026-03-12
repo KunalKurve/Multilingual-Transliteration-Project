@@ -10,6 +10,23 @@ Supported languages:
 
 The goal is to create an end-to-end NLP pipeline including data preprocessing, model training, optimization, benchmarking, and deployment.
 
+## Sample Outputs
+
+Input: Bharat
+Hindi: भरत
+Bengali: ভারতে
+Tamil: பரத்
+
+Input: namaste
+Hindi: नमस्ते
+Bengali: নমস্তে
+Tamil: நமஸ்டே
+
+Input: Krishna
+Hindi: क्रिश्
+Bengali: ক্রিশ্
+Tamil: கிரிஷ்
+
 ## Dataset
 Dataset used: Aksharantar Transliteration Dataset
 
